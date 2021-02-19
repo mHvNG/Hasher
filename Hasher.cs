@@ -1,11 +1,12 @@
 using System;
 using System.Text;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 
 namespace Hashing {
     public sealed class Hasher {
 
-        public enum Types {
+        private enum Types {
             Sha256,
             Sha512
         }
@@ -14,17 +15,17 @@ namespace Hashing {
             
         }
 
-        public string ComputeHashSha256(string plainText, byte[] salt = null) { return this.ComputeHashSha((int)Types.Sha256, plainText, salt); }
+        public KeyValuePair<byte[], string> ComputeHashSha256(string plainText, byte[] salt = null) { return this.ComputeHashSha((int)Types.Sha256, plainText, salt); }
 
-        public string ComputeHashSha512(string plainText, byte[] salt = null) { return this.ComputeHashSha((int)Types.Sha512, plainText, salt); }
+        public KeyValuePair<byte[], string> ComputeHashSha512(string plainText, byte[] salt = null) { return this.ComputeHashSha((int)Types.Sha512, plainText, salt); }
 
         /**
             * * There is a option to give your own salt length.
-            * ! IMPORTANT: DON'T use the same salt length, USE your own randomizer
+            * ! IMPORTANT: As advice don't use the same salt length, USE your own randomizer
             * @param plainText the string as plain text
             * @param salt the length of the salt
          */
-        private string ComputeHashSha(int type, string plainText, byte[] salt = null) {
+        private KeyValuePair<byte[], string> ComputeHashSha(int type, string plainText, byte[] salt = null) {
 
             int multiplyer = 1;
             if (type == (int)Types.Sha512)
@@ -94,7 +95,7 @@ namespace Hashing {
             Array.Copy(hashCode, 0, result, 0, hashLength);
             Array.Copy(saltBytes, 0, result, hashLength, saltLength);
 
-            return ASCIIEncoding.UTF8.GetString(result);
+            return new KeyValuePair<byte[], string>(saltBytes, ASCIIEncoding.UTF8.GetString(result)); 
         }
 
         public string ComputeHashRipemd320(string plainText) {

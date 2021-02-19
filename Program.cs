@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 
 namespace Hashing {
@@ -9,10 +10,9 @@ namespace Hashing {
             Console.WriteLine("Starting");
             Hasher hasher = new Hasher();
             string unHashedPassword = "password";
-            string hashedPassword = hasher.ComputeHashSha256(unHashedPassword, new byte[12]);
-            string hashedPassword2 = hasher.ComputeHashSha256("passd", new byte[12]);
-            if (hashedPassword == hashedPassword2)
-                Console.WriteLine("Match...");
+            // string hashedPassword = hasher.ComputeHashSha256(unHashedPassword, new byte[12]);
+            KeyValuePair<byte[], string> hashedPassword = hasher.ComputeHashSha256(unHashedPassword);
+            Console.WriteLine($"The Salt: {Encoding.UTF8.GetString(hashedPassword.Key)}");
         }
     }
 }
