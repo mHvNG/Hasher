@@ -19,6 +19,14 @@ namespace Hashing {
 
         public KeyValuePair<byte[], string> ComputeHashSha512(string plainText, byte[] salt = null) { return this.ComputeHashSha((int)Types.Sha512, plainText, salt); }
 
+        public bool ValidateSha256(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.Validate((int)Types.Sha256, plainText, hashedResult); }
+
+        public bool ValidateSha512(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.Validate((int)Types.Sha512, plainText, hashedResult); }
+
+        public KeyValuePair<byte[], string> ComputeHashPBKDF2(string plainText, byte[] salt = null, int iterations = 100000) {
+            return KeyValuePair<byte[], string>();
+        }   
+
         /**
             * * There is a option to give your own salt length.
             * ! IMPORTANT: As advice don't use the same salt length, USE your own randomizer
@@ -34,8 +42,8 @@ namespace Hashing {
             /**
                 * * A mimimum & maximum salt length. Salts must be unique, this hashing method uses the Random Class, so the salt length will use the same length occasionally.
              */
-            int minSaltLength = 8*multiplyer; // 64 or 128 Bit
-            int maxSaltLength = 16*multiplyer; // 128 or 256 Bit
+            const int minSaltLength = 8*multiplyer; // 64 or 128 Bit
+            const int maxSaltLength = 16*multiplyer; // 128 or 256 Bit
 
             byte[] saltBytes = null;
 
@@ -98,8 +106,26 @@ namespace Hashing {
             return new KeyValuePair<byte[], string>(saltBytes, ASCIIEncoding.UTF8.GetString(result)); 
         }
 
-        public string ComputeHashRipemd320(string plainText) {
-            return "";
-        }   
+        private bool Validate(int type, string plainText, KeyValuePair<byte[], string> hashedResult) {
+            if (hashedResult.Key is null)
+                throw new Exception("Argument salt cannot have value null...");
+            byte[] salt = hashedResult.Key;
+            string hashedString = hashedResult.Value;
+            /**
+                * * Hash the unhashed string
+             */
+            string result = "";
+            switch(type) {
+                case (int)Types.Sha256:
+                    result = this.ComputeHashSha256(plainText, salt).Value;
+                    break;
+                case (int)Types.Sha512:
+                    result = this.ComputeHashSha512(plainText, salt).Value;
+                    break;
+            }
+            if (result != hashedString)
+                return false;
+            return true;
+        }
     }
 }
