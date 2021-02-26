@@ -4,6 +4,24 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 
 namespace Hashing {
+
+    public sealed class Salt {
+        public Salt() { }
+
+        public byte[] Generate(int minSaltLength, int maxSaltLength) {
+            byte[] saltBytes = null;
+            
+            Random rand = new Random();
+            int len = rand.Next(minSaltLength, maxSaltLength);
+
+            saltBytes = new byte[len];
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+                rng.GetNonZeroBytes(saltBytes);
+
+            return saltBytes;
+        }
+    }
+
     public sealed class Hasher {
 
         private enum Types {
@@ -23,9 +41,9 @@ namespace Hashing {
 
         public bool ValidateSha512(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.Validate((int)Types.Sha512, plainText, hashedResult); }
 
-        public KeyValuePair<byte[], string> ComputeHashPBKDF2(string plainText, byte[] salt = null, int iterations = 100000) {
-            return KeyValuePair<byte[], string>();
-        }   
+        // public KeyValuePair<byte[], string> ComputeHashPBKDF2(string plainText, byte[] salt = null, int iterations = 100000) {
+        //     return KeyValuePair<byte[], string>();
+        // }   
 
         /**
             * * There is a option to give your own salt length.
@@ -42,8 +60,8 @@ namespace Hashing {
             /**
                 * * A mimimum & maximum salt length. Salts must be unique, this hashing method uses the Random Class, so the salt length will use the same length occasionally.
              */
-            const int minSaltLength = 8*multiplyer; // 64 or 128 Bit
-            const int maxSaltLength = 16*multiplyer; // 128 or 256 Bit
+            int minSaltLength = 8*multiplyer; // 64 or 128 Bit
+            int maxSaltLength = 16*multiplyer; // 128 or 256 Bit
 
             byte[] saltBytes = null;
 
@@ -54,11 +72,8 @@ namespace Hashing {
             if (!(salt is null))
                 saltBytes = salt;
             else {
-                Random rand = new Random();
-                int len = rand.Next(minSaltLength, maxSaltLength);
-                saltBytes = new byte[len];
-                using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
-                    rng.GetNonZeroBytes(saltBytes);
+                Salt saltGenerator = new Salt();
+                saltBytes = saltGenerator.Generate(minSaltLength, maxSaltLength);
             }
             
             /**
