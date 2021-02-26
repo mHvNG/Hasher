@@ -69,6 +69,10 @@ namespace Hashing {
                 * Statement for setting up the salt length. 
                 * ! When there's not a given length the method randomizes a length.
              */
+            
+            if (Encoding.UTF8.GetString(salt) == Encoding.UTF8.GetString(new byte[salt.Length]))
+                throw new Exception("A generic byte value was given... It requires a random generated salt value! Try the method `Generate` within the class Salt or let the mothod create one.");
+
             if (!(salt is null))
                 saltBytes = salt;
             else {
