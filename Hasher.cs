@@ -8,6 +8,9 @@ namespace Hashing {
     public sealed class Salt {
         public Salt() { }
 
+        /**
+            * * This method creates a unique salt for more secure hashing.
+         */
         public byte[] Generate(int minSaltLength, int maxSaltLength) {
             byte[] saltBytes = null;
             
@@ -29,6 +32,9 @@ namespace Hashing {
             Sha512
         }
 
+        /**
+            * * A struct to store the correct PBKDF2 hashing properties.
+         */
         public struct EncodedPBKDF2 {
             public byte[] Hash { get; set; }
             public byte[] Salt { get; set; }
@@ -39,14 +45,26 @@ namespace Hashing {
             
         }
 
+        /**
+            * ! All these methods are created for easier use instead of using the `ComputeHashSha` or `ValidateSha` methods.
+         */
         public KeyValuePair<byte[], string> ComputeHashSha256(string plainText, byte[] salt = null) { return this.ComputeHashSha((int)Types.Sha256, plainText, salt); }
 
         public KeyValuePair<byte[], string> ComputeHashSha512(string plainText, byte[] salt = null) { return this.ComputeHashSha((int)Types.Sha512, plainText, salt); }
 
-        public bool ValidateSha256(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.Validate((int)Types.Sha256, plainText, hashedResult); }
+        public bool ValidateSha256(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.ValidateSha((int)Types.Sha256, plainText, hashedResult); }
 
-        public bool ValidateSha512(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.Validate((int)Types.Sha512, plainText, hashedResult); }
+        public bool ValidateSha512(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.ValidateSha((int)Types.Sha512, plainText, hashedResult); }
 
+        /**
+            * * There is a option to give your own salt.
+            * * The method doesn't accept bytes without a random generated value.
+            * ! IMPORTANT: The method itself creates a unique salt when None is given.
+            * @param plainText: the string as plain text.
+            * @param salt: the salt as bytes.
+            * @param iterations: the iterations for hashing.
+            * @return EncodedPBKDF2
+         */
         public EncodedPBKDF2 ComputeHashPBKDF2(string plainText, byte[] salt = null, long iterations = 100000) {
 
             const int minSaltLength = 24;
@@ -77,6 +95,13 @@ namespace Hashing {
             return encodedHash;
         }
 
+        /**
+            * * The method compares the given plain text to the hashed PBKDF2 string.
+            * ! IMPORTANT: It's important to pass the correct salt & iterations count, otherwise it can't hash the correct way.
+            * @param plainText: the string as plain text.
+            * @param hash: The hash, Salt & iterations count.
+            * @return bool
+         */
         public bool ValidatePBKDF2(string plainText, EncodedPBKDF2 hash) {
             EncodedPBKDF2 newHash = this.ComputeHashPBKDF2(plainText, hash.Salt, hash.Iterations);
             if (ASCIIEncoding.UTF8.GetString(hash.Hash) != ASCIIEncoding.UTF8.GetString(newHash.Hash))
@@ -85,10 +110,12 @@ namespace Hashing {
         }
 
         /**
-            * * There is a option to give your own salt length.
-            * ! IMPORTANT: As advice don't use the same salt length, USE your own randomizer
-            * @param plainText the string as plain text
-            * @param salt the length of the salt
+            * * There is a option to give your own salt.
+            * * The method doesn't accept bytes without a random generated value.
+            * ! IMPORTANT: The method itself creates a unique salt when None is given.
+            * @param plainText the string as plain text.
+            * @param salt the length of the salt.
+            * @return KeyValuePair
          */
         private KeyValuePair<byte[], string> ComputeHashSha(int type, string plainText, byte[] salt = null) {
 
@@ -96,18 +123,10 @@ namespace Hashing {
             if (type == (int)Types.Sha512)
                 multiplyer = 2;
 
-            /**
-                * * A mimimum & maximum salt length. Salts must be unique, this hashing method uses the Random Class, so the salt length will use the same length occasionally.
-             */
             int minSaltLength = 8*multiplyer; // 64 or 128 Bit
             int maxSaltLength = 16*multiplyer; // 128 or 256 Bit
 
             byte[] saltBytes = null;
-
-            /**
-                * Statement for setting up the salt length. 
-                * ! When there's not a given length the method randomizes a length.
-             */
             
             if (Encoding.UTF8.GetString(salt) == Encoding.UTF8.GetString(new byte[salt.Length]))
                 throw new Exception("A generic byte value was given... It requires a random generated salt value! Try the method `Generate` within the class Salt or let the mothod create one.");
@@ -118,26 +137,17 @@ namespace Hashing {
                 Salt saltGenerator = new Salt();
                 saltBytes = saltGenerator.Generate(minSaltLength, maxSaltLength);
             }
-            
-            /**
-                * Initialization for copying a range of elements to `plainDataAndSalt`
-             */
+
             byte[] plainData = ASCIIEncoding.UTF8.GetBytes(plainText);
             int plainLength = plainData.Length;
             int saltLength = saltBytes.Length;
             byte[] plainDataAndSalt = new byte[plainLength + saltLength];
             
-            /**
-                * Copying the byte arrays of the plainText and salt length to a combined array `plainDataAndSalt`
-             */
             Array.Copy(plainData, 0, plainDataAndSalt, 0, plainLength);
             Array.Copy(saltBytes, 0, plainDataAndSalt, plainLength, saltLength);
 
             byte[] hashCode = null;
 
-            /**
-                * Compute the combined array `plainDataAndSalt` to a hash code for the correct type
-             */
             switch(type) {
                 case (int)Types.Sha256:
                     using (SHA256Managed sha2 = new SHA256Managed())
@@ -149,30 +159,32 @@ namespace Hashing {
                     break;
             }
 
-            /**
-                * Initialization for copying a range of elements from the computed hashcode and salt length.
-             */
             int hashLength = hashCode.Length;
             byte[] result = new byte[hashLength + saltLength];
 
-            /**
-                * Copying the byte arrays of the hash code and salt length to the end result hash value.
-             */
             Array.Copy(hashCode, 0, result, 0, hashLength);
             Array.Copy(saltBytes, 0, result, hashLength, saltLength);
 
             return new KeyValuePair<byte[], string>(saltBytes, ASCIIEncoding.UTF8.GetString(result));
         }
 
-        private bool Validate(int type, string plainText, KeyValuePair<byte[], string> hashedResult) {
+        /**
+            * * The method compares the given plain text to the given hash and salt.
+            * ! IMPORTANT: It's important to pass the correct salt, otherwise it can't hash the correct way.
+            * @param type: which type to use for the validation.
+            * @param plainText: the string as plain text.
+            * @param hashedResult: the hash and the salt.
+            * @return bool
+         */
+        private bool ValidateSha(int type, string plainText, KeyValuePair<byte[], string> hashedResult) {
+
             if (hashedResult.Key is null)
                 throw new Exception("Argument salt cannot have value null...");
+
             byte[] salt = hashedResult.Key;
             string hashedString = hashedResult.Value;
-            /**
-                * * Hash the unhashed string
-             */
             string result = "";
+
             switch(type) {
                 case (int)Types.Sha256:
                     result = this.ComputeHashSha256(plainText, salt).Value;
@@ -181,6 +193,7 @@ namespace Hashing {
                     result = this.ComputeHashSha512(plainText, salt).Value;
                     break;
             }
+
             if (result != hashedString)
                 return false;
             return true;
