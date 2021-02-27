@@ -29,6 +29,12 @@ namespace Hashing {
             Sha512
         }
 
+        public struct EncodedPBKDF2 {
+            public byte[] Hash { get; set; }
+            public byte[] Salt { get; set; }
+            public int Iterations { get; set; }
+        }
+
         public Hasher() {
             
         }
@@ -41,9 +47,35 @@ namespace Hashing {
 
         public bool ValidateSha512(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.Validate((int)Types.Sha512, plainText, hashedResult); }
 
-        // public KeyValuePair<byte[], string> ComputeHashPBKDF2(string plainText, byte[] salt = null, int iterations = 100000) {
-        //     return KeyValuePair<byte[], string>();
-        // }   
+        public EncodedPBKDF2 ComputeHashPBKDF2(string plainText, byte[] salt = null, long iterations = 100000) {
+
+            const int minSaltLength = 24;
+            const int maxSaltLength = 32;
+
+            byte[] saltBytes = null;
+
+            if (Encoding.UTF8.GetString(salt) == Encoding.UTF8.GetString(new byte[salt.Length]))
+                throw new Exception("A generic byte value was given... It requires a random generated salt value! Try the method `Generate` within the class Salt or let the mothod create one.");
+
+            if (!(salt is null))
+                saltBytes = salt;
+            else {
+                Salt saltGenerator = new Salt();
+                saltBytes = saltGenerator.Generate(minSaltLength, maxSaltLength);
+            }
+
+            byte[] hashCode = null;
+
+            using (Rfc2898DeriveBytes hash = new Rfc2898DeriveBytes(plainText, saltBytes, (int)iterations))
+                hashCode = hash.GetBytes(saltBytes.Length);
+
+            EncodedPBKDF2 encodedHash = default(EncodedPBKDF2);
+            encodedHash.Hash = hashCode;
+            encodedHash.Salt = saltBytes;
+            encodedHash.Iterations = (int)iterations;
+
+            return encodedHash;
+        }   
 
         /**
             * * There is a option to give your own salt length.
@@ -122,7 +154,7 @@ namespace Hashing {
             Array.Copy(hashCode, 0, result, 0, hashLength);
             Array.Copy(saltBytes, 0, result, hashLength, saltLength);
 
-            return new KeyValuePair<byte[], string>(saltBytes, ASCIIEncoding.UTF8.GetString(result)); 
+            return new KeyValuePair<byte[], string>(saltBytes, ASCIIEncoding.UTF8.GetString(result));
         }
 
         private bool Validate(int type, string plainText, KeyValuePair<byte[], string> hashedResult) {
