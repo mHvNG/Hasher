@@ -75,7 +75,14 @@ namespace Hashing {
             encodedHash.Iterations = (int)iterations;
 
             return encodedHash;
-        }   
+        }
+
+        public bool ValidatePBKDF2(string plainText, EncodedPBKDF2 hash) {
+            EncodedPBKDF2 newHash = this.ComputeHashPBKDF2(plainText, hash.Salt, hash.Iterations);
+            if (ASCIIEncoding.UTF8.GetString(hash.Hash) != ASCIIEncoding.UTF8.GetString(newHash.Hash))
+                return false;
+            return true;
+        }
 
         /**
             * * There is a option to give your own salt length.
