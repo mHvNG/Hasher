@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using Hashing;
 
+/// <summary>
+/// This namespace is not made for using like this, just to show how the Hashing library works.
+/// </summary>
 namespace Sha256 {
     class Program {
         static void Main(string[] args) {
@@ -13,6 +16,11 @@ namespace Sha256 {
     sealed class Sha256 {
         public Sha256() { }
 
+        /// <summary>
+        /// An example of how to use the Hashing library.
+        /// Within this method it creates a Salt instance, this is 100% optional. When no value is given the- 
+        /// ComputeHashSha256 creates one itself.
+        /// </summary>
         public void Sha256Hashing() {
 
             Console.WriteLine("The Sha256 example - Made By Mathijs Hoving.");
@@ -20,7 +28,7 @@ namespace Sha256 {
             Console.WriteLine("-----------------------------------");
             
             Hasher hasher = new Hasher();
-            Salt salt = new Salt();
+            Salt salt = new Salt(); // OPTIONAL
 
             Console.WriteLine("Create your password:");
             string plainText = Console.ReadLine();
