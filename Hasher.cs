@@ -39,14 +39,17 @@ namespace Hashing {
     /// </summary>
     public sealed class Hasher {
 
+        /// <summary>
+        /// A enum for the two Sha hashing algorithms.
+        /// </summary>
         private enum Types {
             Sha256,
             Sha512
         }
 
-        /**
-            * * A struct to store the correct PBKDF2 hashing properties.
-         */
+        /// <summary>
+        /// A struct for storing the PBKDF2 hashing properties.
+        /// </summary>
         public struct EncodedPBKDF2 {
             public byte[] Hash { get; set; }
             public byte[] Salt { get; set; }
