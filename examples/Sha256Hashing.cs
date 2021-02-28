@@ -18,7 +18,7 @@ namespace Sha256 {
 
         /// <summary>
         /// An example of how to use the Hashing library.
-        /// Within this method it creates a Salt instance, this is 100% optional. When no value is given the- 
+        /// Within this method it creates a Salt instance, this is 100% optional. When no value is given the
         /// ComputeHashSha256 creates one itself.
         /// </summary>
         public void Sha256Hashing() {

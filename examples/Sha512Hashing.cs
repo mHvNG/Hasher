@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using Hashing;
 
+/// <summary>
+/// This namespace is not made for using like this, just to show how the Hashing library works.
+/// </summary>
 namespace Sha512 {
     class Program {
         static void Main(string[] args) {
@@ -10,9 +13,15 @@ namespace Sha512 {
         }
     }
 
+
     sealed class Sha512 {
         public Sha512() { }
-
+        
+        /// <summary>
+        /// An example of how to use the Hashing library.
+        /// Within this method it creates a Salt instance, this is 100% optional. When no value is given the
+        /// ComputeHashSha512 creates one itself.
+        /// </summary>
         public void Sha512Hashing() {
 
             Console.WriteLine("The Sha512 example - Made By Mathijs Hoving.");
