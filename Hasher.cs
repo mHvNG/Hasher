@@ -63,8 +63,21 @@ namespace Hashing {
         /**
             * ! All these methods are created for easier use instead of using the `ComputeHashSha` or `ValidateSha` methods.
          */
+        
+        /// <summary>
+        /// The public method to use for Sha256 hashing.
+        /// </summary>
+        /// <param name="plainText">The string as plain text.</param>
+        /// <param name="salt">The unique Salt as bytes. OPTIONAL.</param>
+        /// <returns>The method returns a KeyValuePair.</returns>
         public KeyValuePair<byte[], string> ComputeHashSha256(string plainText, byte[] salt = null) { return this.ComputeHashSha((int)Types.Sha256, plainText, salt); }
-
+        
+        /// <summary>
+        /// The public method to use for Sha512 hashing.
+        /// </summary>
+        /// <param name="plainText">The string as plain text.</param>
+        /// <param name="salt">The unique Salt as bytes. OPTIONAL.</param>
+        /// <returns>The method returns a KeyValuePair.</returns>
         public KeyValuePair<byte[], string> ComputeHashSha512(string plainText, byte[] salt = null) { return this.ComputeHashSha((int)Types.Sha512, plainText, salt); }
 
         public bool ValidateSha256(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.ValidateSha((int)Types.Sha256, plainText, hashedResult); }
@@ -127,7 +140,7 @@ namespace Hashing {
         /// <param name="type">Which type of hashing algorithm to use.</param>
         /// <param name="plainText">The string as plain text.</param>
         /// <param name="salt">The unique Salt as bytes. OPTIONAL.</param>
-        /// <returns>The method returns a KeyValuePair with the hashed string and Salt.</returns>
+        /// <returns>The method returns a KeyValuePair.</returns>
         private KeyValuePair<byte[], string> ComputeHashSha(int type, string plainText, byte[] salt = null) {
 
             int multiplyer = 1;
