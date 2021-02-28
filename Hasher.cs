@@ -72,10 +72,10 @@ namespace Hashing {
         public bool ValidateSha512(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.ValidateSha((int)Types.Sha512, plainText, hashedResult); }
 
         /// <summary>
-        /// Computes a plain text string to a PBKDF2 hash. REQUIRES an unique Salt, not just a byte with a generic length.
+        /// Computes a plain text string to a PBKDF2 hash. REQUIRES an unique Salt, not just a regular byte with a length.
         /// </summary>
-        /// <param name="plainText">the string as plain text.</param>
-        /// <param name="salt">The unique salt as bytes.</param>
+        /// <param name="plainText">The string as plain text.</param>
+        /// <param name="salt">The unique salt as bytes. OPTIONAL.</param>
         /// <param name="iterations">The amount of iterations to use when hashing.</param>
         /// <returns>The method returns an EncodedPBKDF2 struct.</returns>
         public EncodedPBKDF2 ComputeHashPBKDF2(string plainText, byte[] salt = null, long iterations = 100000) {
@@ -108,14 +108,6 @@ namespace Hashing {
             return encodedHash;
         }
 
-        /**
-            * * The method compares the given plain text to the hashed PBKDF2 string.
-            * ! IMPORTANT: It's important to pass the correct salt & iterations count, otherwise it can't hash the correct way.
-            * @param plainText: the string as plain text.
-            * @param hash: The hash, Salt & iterations count.
-            * @return bool
-         */
-
         /// <summary>
         /// Compares the given plain text string with the stored hashed string.
         /// </summary>
@@ -128,15 +120,14 @@ namespace Hashing {
                 return false;
             return true;
         }
-
-        /**
-            * * There is a option to give your own salt.
-            * * The method doesn't accept bytes without a random generated value.
-            * ! IMPORTANT: The method itself creates a unique salt when None is given.
-            * @param plainText the string as plain text.
-            * @param salt the length of the salt.
-            * @return KeyValuePair
-         */
+        
+        /// <summary>
+        /// Computes a plain text string to a Sha type hash. REQUIRES a unique Salt, not just a regular byte with a length.
+        /// </summary>
+        /// <param name="type">Which type of hashing algorithm to use.</param>
+        /// <param name="plainText">The string as plain text.</param>
+        /// <param name="salt">The unique Salt as bytes. OPTIONAL.</param>
+        /// <returns>The method returns a KeyValuePair with the hashed string and Salt.</returns>
         private KeyValuePair<byte[], string> ComputeHashSha(int type, string plainText, byte[] salt = null) {
 
             int multiplyer = 1;
