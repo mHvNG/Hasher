@@ -111,8 +111,8 @@ namespace Hashing {
         /// <summary>
         /// Compares the given plain text string with the stored hashed string.
         /// </summary>
-        /// <param name="plainText">the string as plain text.</param>
-        /// <param name="hash">A struct with the hashed string properties.</param>
+        /// <param name="plainText">The string as plain text.</param>
+        /// <param name="hash">A struct with the hashed string and properties.</param>
         /// <returns>The method returns a boolean.</returns>
         public bool ValidatePBKDF2(string plainText, EncodedPBKDF2 hash) {
             EncodedPBKDF2 newHash = this.ComputeHashPBKDF2(plainText, hash.Salt, hash.Iterations);
@@ -179,14 +179,13 @@ namespace Hashing {
             return new KeyValuePair<byte[], string>(saltBytes, ASCIIEncoding.UTF8.GetString(result));
         }
 
-        /**
-            * * The method compares the given plain text to the given hash and salt.
-            * ! IMPORTANT: It's important to pass the correct salt, otherwise it can't hash the correct way.
-            * @param type: which type to use for the validation.
-            * @param plainText: the string as plain text.
-            * @param hashedResult: the hash and the salt.
-            * @return bool
-         */
+        /// <summary>
+        /// Compares the given plain text string with the stored hashed string.
+        /// </summary>
+        /// <param name="type">Which type of hashing algorithm to use.</param>
+        /// <param name="plainText">The string as plain text.</param>
+        /// <param name="hashedResult">A KeyValuePair with the hashed string and properties.</param>
+        /// <returns>The method returns a boolean.</returns>
         private bool ValidateSha(int type, string plainText, KeyValuePair<byte[], string> hashedResult) {
 
             if (hashedResult.Key is null)
