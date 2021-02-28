@@ -5,6 +5,10 @@ using System.Security.Cryptography;
 
 namespace Hashing {
 
+    /// <summary>
+    /// A class for generating an unique Salt.
+    /// Class can't be inherited.
+    /// </summary>
     public sealed class Salt {
         
         public Salt() { }
@@ -29,6 +33,10 @@ namespace Hashing {
         }
     }
 
+    /// <summary>
+    /// A class for hashing passwords and regular strings.
+    /// Class can't be inherited.
+    /// </summary>
     public sealed class Hasher {
 
         private enum Types {
