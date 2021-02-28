@@ -11,7 +11,7 @@ namespace Hashing {
             Hasher hasher = new Hasher();
             Salt salt = new Salt();
             string firstPassword = Console.ReadLine();
-            // KeyValuePair<byte[], string> hashedPassword = hasher.ComputeHashSha256(firstPassword, new byte[13]);
+            // KeyValuePair<byte[], string> hashedPassword = hasher.ComputeHashSha256(firstPassword, salt.Generate(8, 16));
             // string secondPassword = Console.ReadLine();
             // if (hasher.ValidateSha256(secondPassword, hashedPassword))
             //     Console.WriteLine("A successfull match found between the passwords...");

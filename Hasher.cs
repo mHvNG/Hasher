@@ -80,17 +80,17 @@ namespace Hashing {
         /// The public method to use for validating a string with the Sha256 algorithm.
         /// </summary>
         /// <param name="plainText">The string as plain text.</param>
-        /// <param name="hashedResult">A KeyValuePair with the hashed string and Salt.</param>
+        /// <param name="hashProperties">A KeyValuePair with the hashed string and Salt.</param>
         /// <returns>The method returns a boolean.</returns>
-        public bool ValidateSha256(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.ValidateSha((int)Types.Sha256, plainText, hashedResult); }
+        public bool ValidateSha256(string plainText, KeyValuePair<byte[], string> hashProperties) { return this.ValidateSha((int)Types.Sha256, plainText, hashProperties); }
 
         /// <summary>
         /// The public method to use for validating a string with the Sha512 algorithm.
         /// </summary>
         /// <param name="plainText">The string as plain text.</param>
-        /// <param name="hashedResult">A KeyValuePair with the hashed string and Salt.</param>
+        /// <param name="hashProperties">A KeyValuePair with the hashed string and Salt.</param>
         /// <returns>The method returns a boolean.</returns>
-        public bool ValidateSha512(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.ValidateSha((int)Types.Sha512, plainText, hashedResult); }
+        public bool ValidateSha512(string plainText, KeyValuePair<byte[], string> hashProperties) { return this.ValidateSha((int)Types.Sha512, plainText, hashProperties); }
 
         /// <summary>
         /// Computes a plain text string to a PBKDF2 hash. REQUIRES an unique Salt, not just a regular byte with a length.
@@ -133,11 +133,11 @@ namespace Hashing {
         /// Compares the given plain text string with the stored hashed string.
         /// </summary>
         /// <param name="plainText">The string as plain text.</param>
-        /// <param name="hash">A struct with the hashed string and properties.</param>
+        /// <param name="hashProperties">A struct with the hashed string and properties.</param>
         /// <returns>The method returns a boolean.</returns>
-        public bool ValidatePBKDF2(string plainText, EncodedPBKDF2 hash) {
-            EncodedPBKDF2 newHash = this.ComputeHashPBKDF2(plainText, hash.Salt, hash.Iterations);
-            if (ASCIIEncoding.UTF8.GetString(hash.Hash) != ASCIIEncoding.UTF8.GetString(newHash.Hash))
+        public bool ValidatePBKDF2(string plainText, EncodedPBKDF2 hashProperties) {
+            EncodedPBKDF2 newHashProperties = this.ComputeHashPBKDF2(plainText, hashProperties.Salt, hashProperties.Iterations);
+            if (ASCIIEncoding.UTF8.GetString(hashProperties.Hash) != ASCIIEncoding.UTF8.GetString(newHashProperties.Hash))
                 return false;
             return true;
         }
@@ -205,15 +205,15 @@ namespace Hashing {
         /// </summary>
         /// <param name="type">Which type of hashing algorithm to use.</param>
         /// <param name="plainText">The string as plain text.</param>
-        /// <param name="hashedResult">A KeyValuePair with the hashed string and properties.</param>
+        /// <param name="hashProperties">A KeyValuePair with the hashed string and properties.</param>
         /// <returns>The method returns a boolean.</returns>
-        private bool ValidateSha(int type, string plainText, KeyValuePair<byte[], string> hashedResult) {
+        private bool ValidateSha(int type, string plainText, KeyValuePair<byte[], string> hashProperties) {
 
-            if (hashedResult.Key is null)
+            if (hashProperties.Key is null)
                 throw new Exception("Argument salt cannot have value null...");
 
-            byte[] salt = hashedResult.Key;
-            string hashedString = hashedResult.Value;
+            byte[] salt = hashProperties.Key;
+            string hash = hashProperties.Value;
             string result = "";
 
             switch(type) {
@@ -225,7 +225,7 @@ namespace Hashing {
                     break;
             }
 
-            if (result != hashedString)
+            if (result != hash)
                 return false;
             return true;
         }
