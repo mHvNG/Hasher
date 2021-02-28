@@ -6,11 +6,15 @@ using System.Security.Cryptography;
 namespace Hashing {
 
     public sealed class Salt {
+        
         public Salt() { }
 
-        /**
-            * * This method creates a unique salt for more secure hashing.
-         */
+        /// <summary>
+        /// Generates an unique Salt value.
+        /// </summary>
+        /// <param name="minSaltLength">The minimum length for the Salt.</param>
+        /// <param name="maxSaltLength">The maximum length for the Salt.</param>
+        /// <returns>The method returns a byte array.</returns>
         public byte[] Generate(int minSaltLength, int maxSaltLength) {
             byte[] saltBytes = null;
             
@@ -56,15 +60,13 @@ namespace Hashing {
 
         public bool ValidateSha512(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.ValidateSha((int)Types.Sha512, plainText, hashedResult); }
 
-        /**
-            * * There is a option to give your own salt.
-            * * The method doesn't accept bytes without a random generated value.
-            * ! IMPORTANT: The method itself creates a unique salt when None is given.
-            * @param plainText: the string as plain text.
-            * @param salt: the salt as bytes.
-            * @param iterations: the iterations for hashing.
-            * @return EncodedPBKDF2
-         */
+        /// <summary>
+        /// Computes a plain text string to a PBKDF2 hash. REQUIRES an unique Salt, not just a byte with a generic length.
+        /// </summary>
+        /// <param name="plainText">the string as plain text.</param>
+        /// <param name="salt">The unique salt as bytes.</param>
+        /// <param name="iterations">The amount of iterations to use when hashing.</param>
+        /// <returns>The method returns an EncodedPBKDF2 struct.</returns>
         public EncodedPBKDF2 ComputeHashPBKDF2(string plainText, byte[] salt = null, long iterations = 100000) {
 
             const int minSaltLength = 24;
