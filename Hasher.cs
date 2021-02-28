@@ -3,6 +3,11 @@ using System.Text;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
+/// <summary>
+/// This namespace contains two classes: Salt and Hasher.
+/// When using this CS file, I suggest to setup the namespace like this: `[Namespace].Hashing`. (Namespace needs to be replaced by your projects namespace.)
+/// To import the namespace: `using [namespace].Hashing`.
+/// </summary>
 namespace Hashing {
 
     /// <summary>
@@ -40,7 +45,7 @@ namespace Hashing {
     public sealed class Hasher {
 
         /// <summary>
-        /// A enum for the two Sha hashing algorithms.
+        /// An enum for the two Sha hashing algorithms.
         /// </summary>
         private enum Types {
             Sha256,
@@ -65,7 +70,7 @@ namespace Hashing {
         /// </summary>
         /// <param name="plainText">The string as plain text.</param>
         /// <param name="salt">The unique Salt as bytes. OPTIONAL.</param>
-        /// <returns>The method returns a KeyValuePair.</returns>
+        /// <returns>The method returns a KeyValuePair. Key: Salt, Value: hash.</returns>
         public KeyValuePair<byte[], string> ComputeHashSha256(string plainText, byte[] salt = null) { return this.ComputeHashSha((int)Types.Sha256, plainText, salt); }
         
         /// <summary>
@@ -73,7 +78,7 @@ namespace Hashing {
         /// </summary>
         /// <param name="plainText">The string as plain text.</param>
         /// <param name="salt">The unique Salt as bytes. OPTIONAL.</param>
-        /// <returns>The method returns a KeyValuePair.</returns>
+        /// <returns>The method returns a KeyValuePair. Key: Salt, Value: hash.</returns>
         public KeyValuePair<byte[], string> ComputeHashSha512(string plainText, byte[] salt = null) { return this.ComputeHashSha((int)Types.Sha512, plainText, salt); }
 
         /// <summary>
@@ -81,7 +86,7 @@ namespace Hashing {
         /// </summary>
         /// <param name="plainText">The string as plain text.</param>
         /// <param name="hashProperties">A KeyValuePair with the hashed string and Salt.</param>
-        /// <returns>The method returns a boolean.</returns>
+        /// <returns>The method returns a boolean. True: Valid, False: Invalid.</returns>
         public bool ValidateSha256(string plainText, KeyValuePair<byte[], string> hashProperties) { return this.ValidateSha((int)Types.Sha256, plainText, hashProperties); }
 
         /// <summary>
@@ -89,7 +94,7 @@ namespace Hashing {
         /// </summary>
         /// <param name="plainText">The string as plain text.</param>
         /// <param name="hashProperties">A KeyValuePair with the hashed string and Salt.</param>
-        /// <returns>The method returns a boolean.</returns>
+        /// <returns>The method returns a boolean. True: Valid, False: Invalid.</returns>
         public bool ValidateSha512(string plainText, KeyValuePair<byte[], string> hashProperties) { return this.ValidateSha((int)Types.Sha512, plainText, hashProperties); }
 
         /// <summary>
@@ -98,7 +103,7 @@ namespace Hashing {
         /// <param name="plainText">The string as plain text.</param>
         /// <param name="salt">The unique salt as bytes. OPTIONAL.</param>
         /// <param name="iterations">The amount of iterations to use when hashing.</param>
-        /// <returns>The method returns an EncodedPBKDF2 struct.</returns>
+        /// <returns>The method returns an EncodedPBKDF2 struct with the proporties of the hash.</returns>
         public EncodedPBKDF2 ComputeHashPBKDF2(string plainText, byte[] salt = null, long iterations = 100000) {
 
             const int minSaltLength = 24;
@@ -134,7 +139,7 @@ namespace Hashing {
         /// </summary>
         /// <param name="plainText">The string as plain text.</param>
         /// <param name="hashProperties">A struct with the hashed string and properties.</param>
-        /// <returns>The method returns a boolean.</returns>
+        /// <returns>The method returns a boolean. True: Valid, False: Invalid.</returns>
         public bool ValidatePBKDF2(string plainText, EncodedPBKDF2 hashProperties) {
             EncodedPBKDF2 newHashProperties = this.ComputeHashPBKDF2(plainText, hashProperties.Salt, hashProperties.Iterations);
             if (ASCIIEncoding.UTF8.GetString(hashProperties.Hash) != ASCIIEncoding.UTF8.GetString(newHashProperties.Hash))
@@ -148,7 +153,7 @@ namespace Hashing {
         /// <param name="type">Which type of hashing algorithm to use.</param>
         /// <param name="plainText">The string as plain text.</param>
         /// <param name="salt">The unique Salt as bytes. OPTIONAL.</param>
-        /// <returns>The method returns a KeyValuePair.</returns>
+        /// <returns>The method returns a KeyValuePair. Key: Salt, Value: hash.</returns>
         private KeyValuePair<byte[], string> ComputeHashSha(int type, string plainText, byte[] salt = null) {
 
             int multiplyer = 1;
@@ -206,7 +211,7 @@ namespace Hashing {
         /// <param name="type">Which type of hashing algorithm to use.</param>
         /// <param name="plainText">The string as plain text.</param>
         /// <param name="hashProperties">A KeyValuePair with the hashed string and properties.</param>
-        /// <returns>The method returns a boolean.</returns>
+        /// <returns>The method returns a boolean. True: Valid, False: Invalid.</returns>
         private bool ValidateSha(int type, string plainText, KeyValuePair<byte[], string> hashProperties) {
 
             if (hashProperties.Key is null)
