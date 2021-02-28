@@ -59,10 +59,6 @@ namespace Hashing {
         public Hasher() {
             
         }
-
-        /**
-            * ! All these methods are created for easier use instead of using the `ComputeHashSha` or `ValidateSha` methods.
-         */
         
         /// <summary>
         /// The public method to use for Sha256 hashing.
@@ -80,8 +76,20 @@ namespace Hashing {
         /// <returns>The method returns a KeyValuePair.</returns>
         public KeyValuePair<byte[], string> ComputeHashSha512(string plainText, byte[] salt = null) { return this.ComputeHashSha((int)Types.Sha512, plainText, salt); }
 
+        /// <summary>
+        /// The public method to use for validating a string with the Sha256 algorithm.
+        /// </summary>
+        /// <param name="plainText">The string as plain text.</param>
+        /// <param name="hashedResult">A KeyValuePair with the hashed string and Salt.</param>
+        /// <returns>The method returns a boolean.</returns>
         public bool ValidateSha256(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.ValidateSha((int)Types.Sha256, plainText, hashedResult); }
 
+        /// <summary>
+        /// The public method to use for validating a string with the Sha512 algorithm.
+        /// </summary>
+        /// <param name="plainText">The string as plain text.</param>
+        /// <param name="hashedResult">A KeyValuePair with the hashed string and Salt.</param>
+        /// <returns>The method returns a boolean.</returns>
         public bool ValidateSha512(string plainText, KeyValuePair<byte[], string> hashedResult) { return this.ValidateSha((int)Types.Sha512, plainText, hashedResult); }
 
         /// <summary>
