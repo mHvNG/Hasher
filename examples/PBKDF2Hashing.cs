@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using Hashing;
 
+/// <summary>
+/// This namespace is not made for using like this, just to show how the Hashing library works.
+/// </summary>
 namespace PBKDF2 {
     class Program {
         static void Main(string[] args) {
@@ -13,6 +16,11 @@ namespace PBKDF2 {
     sealed class PBKDF2 {
         public PBKDF2() { }
 
+        /// <summary>
+        /// An example of how to use the Hashing library.
+        /// Within this method it creates a Salt instance, this is 100% optional. When no value is given the
+        /// ComputeHashPBKDF2 creates one itself.
+        /// </summary>
         public void PBKDF2Hashing() {
 
             Console.WriteLine("The PBKDF2 example - Made By Mathijs Hoving.");
