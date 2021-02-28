@@ -115,6 +115,13 @@ namespace Hashing {
             * @param hash: The hash, Salt & iterations count.
             * @return bool
          */
+
+        /// <summary>
+        /// Compares the given plain text string with the stored hashed string.
+        /// </summary>
+        /// <param name="plainText">the string as plain text.</param>
+        /// <param name="hash">A struct with the hashed string properties.</param>
+        /// <returns>The method returns a boolean.</returns>
         public bool ValidatePBKDF2(string plainText, EncodedPBKDF2 hash) {
             EncodedPBKDF2 newHash = this.ComputeHashPBKDF2(plainText, hash.Salt, hash.Iterations);
             if (ASCIIEncoding.UTF8.GetString(hash.Hash) != ASCIIEncoding.UTF8.GetString(newHash.Hash))
