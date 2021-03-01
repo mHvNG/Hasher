@@ -14,9 +14,9 @@ The Salt class is for generating an unique Salt. When using this class you need 
 
 This class contains functionalities for three hashing algorithms:
 
-* ***Sha256:*** *more information about the algorithm here.*
-* ***Sha512:*** *more information about the algorithm here.*
-* ***PBKDF2:*** *more information about the algorithm here.*
+* ***Sha256:*** *more information about the algorithm [here](https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.sha256?view=net-5.0).*
+* ***Sha512:*** *more information about the algorithm [here](https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.sha512?view=net-5.0).*
+* ***PBKDF2:*** *more information about the algorithm [here](https://en.wikipedia.org/wiki/PBKDF2).*
 
 Every algorithm has his own **Compute** & **Validate** method. 
 
